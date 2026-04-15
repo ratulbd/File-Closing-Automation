@@ -16,11 +16,9 @@ async function request(path, options = {}) {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  // Add CORS credentials for production
   const fetchOptions = {
     ...options,
     headers,
-    credentials: API_BASE.includes("localhost") ? "same-origin" : "include"
   };
 
   const res = await fetch(url, fetchOptions);

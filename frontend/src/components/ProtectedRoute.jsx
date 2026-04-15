@@ -6,17 +6,32 @@ export function ProtectedRoute({ children }) {
   const [ok, setOk] = useState(false);
 
   useEffect(() => {
-    api
-      .me()
-      .then(() => {
+    let timeoutId;
+
+    const checkAuth = async () => {
+      try {
+        await api.me();
         setOk(true);
-        setChecking(false);
-      })
-      .catch(() => {
+      } catch {
         setOk(false);
-        setChecking(false);
         window.location.href = "/login";
-      });
+      } finally {
+        setChecking(false);
+      }
+    };
+
+    // Timeout safety: if backend is cold/slow, redirect after 8s
+    timeoutId = setTimeout(() => {
+      if (checking) {
+        setChecking(false);
+        setOk(false);
+        window.location.href = "/login";
+      }
+    }, 8000);
+
+    checkAuth();
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   if (checking) {

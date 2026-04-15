@@ -71,16 +71,13 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Employee Clearance Portal - Google Sheets", lifespan=lifespan)
 
-# CORS configuration
-cors_origins = ["http://localhost:5173", "https://*.firebaseapp.com", "https://*.web.app"]
-extra_origins = os.getenv("CORS_ORIGINS", "")
-if extra_origins:
-    cors_origins = [o.strip() for o in extra_origins.split(",") if o.strip()]
+# CORS configuration - allow all origins since we use JWT Bearer tokens, not cookies
+cors_origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins,
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
