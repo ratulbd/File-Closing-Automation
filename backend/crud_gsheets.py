@@ -52,7 +52,7 @@ class GSheetsCRUD:
 
     def _str_to_datetime(self, s: Optional[str]) -> Optional[datetime]:
         """Convert ISO format string back to datetime."""
-        if not s:
+        if not isinstance(s, str) or not s.strip():
             return None
         try:
             return datetime.fromisoformat(s)
